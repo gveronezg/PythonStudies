@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<person>
+    <firstname>Gabriel</firstname>
+    <lastname>Desenvolvedor</lastname>
+    <home>Franca</home>
+    <skill name="SQL Server"/>
+    <skill name="MongoDB"/>
+    <skill name="Python"/>
+    <skill name="BigQuery"/>
+    <skill name="Spreadsheets"/>
+</person>
