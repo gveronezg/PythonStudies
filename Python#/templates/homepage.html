@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChampsZap</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #top-bar {
+            background-color: #0d00ff;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        #lista_mensagens {
+            padding: 10px;
+            height: calc(100vh - 150px);
+            overflow-y: scroll;
+        }
+
+        #lista_mensagens p {
+            background-color: #949fff;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        #input-container {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #F4F4F4;
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #input-container input[type="text"] {
+            padding: 10px;
+            border: none;
+            outline: none;
+            flex: 1;
+        }
+
+        #input-container input#usuario {
+            margin-right: 10px;
+            width: 30%;
+        }
+
+        #input-container input#mensagem {
+            flex: 1;
+        }
+
+        #input-container button {
+            padding: 10px 20px;
+            background-color: #075E54;
+            color: #FFF;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js" integrity="sha512-Z6C1p1NIexPj5MsVUunW4pg7uMX6/TT3CUVldmjXx2kpip1eZcrAnxIusDxyFIikyM9A61zOVNgvLr/TGudOQg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <div id="top-bar">
+        <h1>ChatGVG</h1>
+    </div>
+    <div id="lista_mensagens">
+        <p>Bem vindo ao chat GVG!</p>
+    </div>
+
+    <div id="input-container">
+        <!-- input do tipo string, com sobre de sugestão e obrigatório -->
+        <input type="text" id="usuario" placeholder="Usuário" required>
+        <div style="width: 10px;"></div>
+        <input type="text" id="mensagem" placeholder="Mensagem" required>
+        <button id="botao">Enviar</button>
+    </div>
+    
+    <!-- sempre começa com o $, depois o parametro onde ele será aplicado
+    executando quando pronto, uma função -->
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var socket = io("192.168.100.170:5000");
+            socket.on("connect", function(){
+                console.log("Um novo usuário se conectou!");
+            });
+
+            socket.on("message", function(data){
+                console.log("Recebido uma nova mensagem!");
+                $("#lista_mensagens").append($("<p>").text(data));
+                $("#lista_mensagens").scrollTop($("#lista_mensagens")[0].scrollHeight);
+            });
+
+            $("#botao").on("click", function(){
+                console.log("Clicou no botão!");
+                socket.send($("#usuario").val() + ": " + $("#mensagem").val());
+                $("mensagem").val("");
+            });
+
+            $("#mensagem").on('keypress', function() {
+                if (event.key === "Enter") {
+                    console.log("Deu enter.");
+                    socket.send($('#usuario').val() + ": " + $('#mensagem').val());
+                    $('#mensagem').val('');
+                }
+            });
+        })
+    </script>
+</body>
+</html>
